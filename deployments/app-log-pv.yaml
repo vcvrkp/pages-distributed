@@ -1,0 +1,15 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: log-persistent-volume
+  labels:
+    type: local
+spec:
+  volumeMode: Filesystem
+  storageClassName: slow
+  capacity:
+    storage: 500Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/logs"
