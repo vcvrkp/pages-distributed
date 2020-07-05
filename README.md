@@ -1,6 +1,6 @@
 ## Instruction to start the Distributed Application from scratch
 - Download the project zip file and extract it inside workspace folder
-- Create a repository in git with the name pages. Keep everything default, while creating the repository, don't change anything other than default.
+- Create a repository in github with the name *pages-distributed*. Keep everything default, while creating the repository, don't change anything other than default.
 - Copy the git remote add origin <path> command and execute it in the directory
 - Create a build.gradle file with following content
 
