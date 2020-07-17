@@ -2,6 +2,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: mysql
+  namespace: aditya
   labels:
     app: mysql
 spec:

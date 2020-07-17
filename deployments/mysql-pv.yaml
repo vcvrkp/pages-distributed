@@ -2,10 +2,11 @@ kind: PersistentVolume
 apiVersion: v1
 metadata:
   name: mysql-persistent-volume
+  namespace: aditya
   labels:
     type: local
 spec:
-  storageClassName: manual
+  storageClassName: mysql-aditya
   capacity:
     storage: 1Gi
   accessModes:

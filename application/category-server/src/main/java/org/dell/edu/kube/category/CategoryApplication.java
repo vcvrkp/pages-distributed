@@ -10,7 +10,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @EnableSwagger2
 @SpringBootApplication
-public class KubeWorkshopCategoryApplication {
+public class CategoryApplication {
     @Bean
     public Docket productApi() {
         return new Docket(DocumentationType.SWAGGER_2).select()
@@ -19,7 +19,7 @@ public class KubeWorkshopCategoryApplication {
 
 
     public static void main(String[] args) {
-        SpringApplication.run(KubeWorkshopCategoryApplication.class, args);
+        SpringApplication.run(CategoryApplication.class, args);
     }
 
 }

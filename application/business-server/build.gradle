@@ -1,14 +1,17 @@
-plugins {
-    id 'java'
-}
+apply from: "$projectDir/../server.gradle"
 
-group 'com.example'
-version 'unspecified'
-
-repositories {
-    mavenCentral()
-}
+group = 'org.edu.dell.kube'
+version = '0.0.1-SNAPSHOT'
+description("Business Server")
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    implementation project(":components:category")
+    implementation project(":components:business")
+
+}
+jar {
+    enabled = true
+    manifest {
+        attributes 'Main-Class': 'org.dell.edu.kube.business.BusinessApplication'
+    }
 }
