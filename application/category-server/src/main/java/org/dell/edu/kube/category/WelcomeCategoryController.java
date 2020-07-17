@@ -1,4 +1,4 @@
-package org.dell.edu.category;
+package org.dell.edu.kube.category;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

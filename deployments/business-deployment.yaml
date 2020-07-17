@@ -24,6 +24,9 @@ spec:
       - image: adityapratapbhuyan/business:distributed
         imagePullPolicy: Always
         name: business
+        env:
+        - name: CATEGORY_URL
+          value: "http://category:8082/category"
         volumeMounts:
         - name: log-volume
           mountPath: "/var/tmp/"

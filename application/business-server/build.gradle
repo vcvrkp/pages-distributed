@@ -9,15 +9,9 @@ dependencies {
     implementation project(":components:business")
 
 }
-jar {
-    enabled = true
-    manifest {
-        attributes 'Main-Class': 'org.dell.edu.kube.business.BusinessApplication'
-    }
-}
 
 test.environment([
         "SPRING_DATASOURCE_USERNAME": "root",
         "SPRING_DATASOURCE_PASSWORD": "root",
-		"SPRING_DATASOURCE_URL": "jdbc:mysql://localhost:3306/business?createDatabaseIfNotExist=true&useSSL=false&user=root",
+        "SPRING_DATASOURCE_URL": "jdbc:mysql://localhost:3306/business?createDatabaseIfNotExist=true&useSSL=false&user=root",
 ])

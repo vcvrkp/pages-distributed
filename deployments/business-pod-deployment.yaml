@@ -13,6 +13,9 @@ spec:
   containers:
   - image: adityapratapbhuyan/business:distributed
     imagePullPolicy: Always
+    env:
+    - name : CATEGORY_URL
+      value: "http://category:8082/category"
     name: business
     volumeMounts:
       - name: log-volume

@@ -3,9 +3,8 @@ name: PeloPages Distributed Pipeline
 on:
   push:
     branches:
-      - '*'
-    tags:
-      - '*'
+      - master
+      - distributed
 
 jobs:
   build-artifact:
@@ -25,25 +24,25 @@ jobs:
           gradle-version: 6.4
       - name: Verify Build
         run: |
-          ls -l application/business/build/libs
-          ls -l application/category/build/libs
+          ls -l application/business-server/build/libs
+          ls -l application/category-server/build/libs
           echo "Build Fine"
       - name: Upload Artifact Business
         uses: actions/upload-artifact@v2
         with:
           name: artifact
-          path: application/business/build/libs/business-1.0-SNAPSHOT.jar
+          path: application/business-server/build/libs/business-1.0-SNAPSHOT.jar
       - name: Upload Artifact Category
         uses: actions/upload-artifact@v2
         with:
           name: artifact
-          path: application/category/build/libs/category-1.0-SNAPSHOT.jar
+          path: application/category-server/build/libs/category-1.0-SNAPSHOT.jar
       - name: build-docker-image-business
         uses: docker/build-push-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: <docker-your-name>/business
+          repository: adityapratapbhuyan/business
           tags: distributed
           dockerfile: dockerfiles/Dockerfile-business
       - name: build-docker-image-category
@@ -51,7 +50,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: <docker-user-name>/category
+          repository: adityapratapbhuyan/category
           tags: distributed
           dockerfile: dockerfiles/Dockerfile-category
   deploy-image-to-pks:
