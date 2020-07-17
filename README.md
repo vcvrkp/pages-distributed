@@ -588,11 +588,11 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-web"
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation "org.springframework.boot:spring-boot-starter-actuator"
-    implementation group: 'io.springfox', name: 'springfox-core', version: '2.7.0'
-    implementation group: 'io.swagger', name: 'swagger-annotations', version: '1.6.1'
-    implementation 'io.springfox:springfox-swagger2:2.7.0'
-    implementation  'io.springfox:springfox-swagger-ui:2.7.0'
-    runtimeOnly 'mysql:mysql-connector-java'
+    implementation group: 'io.springfox', name: 'springfox-core', version: '2.9.2'
+    implementation group: 'io.swagger', name: 'swagger-annotations', version: '1.6.2'
+    implementation 'io.springfox:springfox-swagger2:2.9.2'
+    implementation  'io.springfox:springfox-swagger-ui:2.9.2'
+    runtimeOnly 'mysql:mysql-connector-java:8.0.12'
 
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
@@ -614,12 +614,6 @@ description("Category Server")
 
 dependencies {
     implementation project(":components:category")
-}
-jar {
-    enabled = true
-    manifest {
-        attributes 'Main-Class': 'org.dell.edu.kube.category.CategoryApplication'
-    }
 }
 ```
 - Create package *org.dell.edu.kube.category* under src/main/java
@@ -724,12 +718,6 @@ dependencies {
     implementation project(":components:business")
 
 }
-jar {
-    enabled = true
-    manifest {
-        attributes 'Main-Class': 'org.dell.edu.kube.business.BusinessApplication'
-    }
-}
 ```
 - Create a package in the name **org.dell.edu.kube.business** under src/main/java
 - Create class **BusinessApplication.java**
@@ -801,7 +789,7 @@ public class WelcomeBusinessController {
 - Add the following content in the application.properties in src/main/resources folder. Create a new file of not present.
 ```properties
 spring.application.name=business
-server.port=8082
+server.port=8081
 management.endpoints.web.exposure.include=*
 management.endpoint.health.show-details=always
 spring.jpa.hibernate.ddl-auto=update
@@ -880,7 +868,7 @@ docker push <docker-user-name>/business:distributed
 ```
 
 ### Kubernetizing the application
-- In both the src/main/resources/application.properties comment the  all the properties present under *For Testing locally* section and uncomment all the properties present under *For Deployment in Kubernetes* section
+- In both business-server and category-server, in the src/main/resources/application.properties comment the  all the properties present under *For Testing locally* section and uncomment all the properties present under *For Deployment in Kubernetes* section
 
 - Create a **deployments** folder under the root folder. We need to create the following Kubernetes Deployment files under *deployments* folder
 - dist-namespace.yaml
@@ -953,6 +941,9 @@ spec:
       - image: <docker-user-name>/business:distributed
         imagePullPolicy: Always
         name: business
+        env:
+        - name : CATEGORY_URL
+          value: "http://category:8082/category"
         volumeMounts:
         - name: log-volume
           mountPath: "/var/tmp/"
@@ -980,6 +971,9 @@ spec:
   - image: <docker-user-name>/business:distributed
     imagePullPolicy: Always
     name: business
+    env:
+    - name : CATEGORY_URL
+      value: "http://category:8082/category"
     volumeMounts:
       - name: log-volume
         mountPath: "/var/tmp/"
@@ -1265,19 +1259,19 @@ jobs:
           gradle-version: 6.4
       - name: Verify Build
         run: |
-           ls -l application/business/build/libs
-           ls -l application/category/build/libs
+           ls -l application/business-server/build/libs
+           ls -l application/category-server/build/libs
            echo "Build Fine"
       - name: Upload Artifact Business
         uses: actions/upload-artifact@v2
         with:
           name: artifact
-          path: application/business/build/libs/business-1.0-SNAPSHOT.jar
+          path: application/business-server/build/libs/business-1.0-SNAPSHOT.jar
       - name: Upload Artifact Category
         uses: actions/upload-artifact@v2
         with:
           name: artifact
-          path: application/category/build/libs/category-1.0-SNAPSHOT.jar
+          path: application/category-server/build/libs/category-1.0-SNAPSHOT.jar
       - name: build-docker-image-business
         uses: docker/build-push-action@v1
         with:
@@ -1349,6 +1343,11 @@ kubectl apply -f deployments/category-deployment.yaml
 kubectl apply -f deployments/business-service.yaml
 kubectl apply -f deployments/business-deployment.yaml
 ```
+- If business and category deployments are already available in the cluster and your are trying to re-deploy. always delete the deployments using below commands.
+```shell script
+kubectl delete -f deployments/category-deployment.yaml
+kubectl delete -f deployments/business-deployment.yaml
+```
 - Execute the below command in kubernetes cluster to set your default namespace
 ```shell script
 kubectl config set-context --current --namespace=<your-name>
@@ -1363,3 +1362,8 @@ kubectl get pod
 kubectl get service
 ```
 - From the output of the last command, get the url of business and category services. Then access the services using "http//\<external-ip>:Port" on browser.
+- If the service is of type *NodePort*, use the following command to port forward the services to access it. 
+```shell script
+kubectl port-forward service/business 8081:8081
+```
+- You can execute the above command in a terminal and access the application using url http://localhost:8081. To stop port forward use CTRL+C
