@@ -615,6 +615,12 @@ description("Category Server")
 dependencies {
     implementation project(":components:category")
 }
+jar {
+    enabled = true
+    manifest {
+        attributes 'Main-Class': 'org.dell.edu.kube.category.CategoryApplication'
+    }
+}
 ```
 - Create package *org.dell.edu.kube.category* under src/main/java
 - Create Application class named **CategoryApplication.java** in *org.dell.edu.kube.category* package
@@ -640,7 +646,7 @@ public class CategoryApplication {
 
 
     public static void main(String[] args) {
-        SpringApplication.run(KubeWorkshopCategoryApplication.class, args);
+        SpringApplication.run(CategoryApplication.class, args);
     }
 
 }
@@ -685,13 +691,13 @@ spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.MySQL5Dialect
 
 #For Deployment in Kubernetes
-#spring.datasource.url=jdbc:mysql://mysql/category?createDatabaseIfNotExist=true&useSSL=false&user=root
+#spring.datasource.url=jdbc:mysql://mysql/category?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false&user=root
 #MySQL Root user password in kubernetes deployment is password
 #spring.datasource.password=password
 #spring.datasource.username=root
 
 #For Testing locally
-spring.datasource.url=jdbc:mysql://localhost:3306/category?createDatabaseIfNotExist=true&useSSL=false&user=root
+spring.datasource.url=jdbc:mysql://localhost:3306/category?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false&user=root
 #For Deployment locally provide the appropriate root user password
 #[Root User Password @Localhost MySQL Deployment]
 spring.datasource.password=
@@ -717,6 +723,12 @@ dependencies {
     implementation project(":components:category")
     implementation project(":components:business")
 
+}
+jar {
+    enabled = true
+    manifest {
+        attributes 'Main-Class': 'org.dell.edu.kube.business.BusinessApplication'
+    }
 }
 ```
 - Create a package in the name **org.dell.edu.kube.business** under src/main/java
@@ -748,7 +760,7 @@ public class BusinessApplication {
 
 
     public static void main(String[] args) {
-        SpringApplication.run(KubeWorkshopBusinessApplication.class, args);
+        SpringApplication.run(BusinessApplication.class, args);
     }
 
     @Bean
@@ -797,13 +809,13 @@ spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.MySQL5Dialect
 
 #For Deployment in Kubernetes
-#spring.datasource.url=jdbc:mysql://mysql/business?createDatabaseIfNotExist=true&useSSL=false&user=root
+#spring.datasource.url=jdbc:mysql://mysql/business?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false&user=root
 #MySQL Root user password in kubernetes deployment is password
 #spring.datasource.password=password
 #spring.datasource.username=root
 
 #For Testing locally
-spring.datasource.url=jdbc:mysql://localhost:3306/business?createDatabaseIfNotExist=true&useSSL=false&user=root
+spring.datasource.url=jdbc:mysql://localhost:3306/business?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false&user=root
 #For Deployment locally provide the appropriate root user password
 #[Root User Password @Localhost MySQL Deployment]
 spring.datasource.password=
@@ -853,8 +865,8 @@ ENTRYPOINT ["java","-jar","/app.jar"]
 ```
 - To create docker images use the below commands. Please replace <docker-user-name> with your own docker hub user name'
 ```shell script
-docker build -f dockerfiles/Dockerfile.cat -t <docker-user-name>/category:distributed .
-docker build -f dockerfiles/Dockerfile.bus -t <docker-user-name>/business:distributed .
+docker build -f dockerfiles/Dockerfile-category -t <docker-user-name>/category:distributed .
+docker build -f dockerfiles/Dockerfile-business -t <docker-user-name>/business:distributed .
 ```
 - Test the docker images locally by running the below commands
 ```shell script
@@ -1226,9 +1238,9 @@ test.environment([
 4. Create an API token and copy it.
 5. Use it as the value for PKS_TOKEN
 ```
-- Create **.github/workflow** directory under root project and create *pipeline.yaml* file with below content
+- Create **.github/workflows** directory under root project and create *pipeline.yaml* file with below content
 ```yaml
-name: PeloPages Pipeline
+name: PeloPages Distributed Pipeline
 
 on:
   push:
