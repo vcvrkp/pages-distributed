@@ -4,7 +4,7 @@ metadata:
   labels:
     app: category
   name: category
-  namespace: aditya
+  namespace: rkp
 spec:
   replicas: 2
   selector:
@@ -21,7 +21,7 @@ spec:
         persistentVolumeClaim:
           claimName: log-persistent-claim
       containers:
-      - image: adityapratapbhuyan/category:distributed
+      - image: mytechdictionary/category:distributed
         imagePullPolicy: Always
         name: category
         ports:

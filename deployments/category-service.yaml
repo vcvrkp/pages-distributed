@@ -4,7 +4,7 @@ metadata:
   labels:
     app: category
   name: category
-  namespace: aditya
+  namespace: rkp
 spec:
   ports:
   - port: 8082
@@ -12,6 +12,6 @@ spec:
     targetPort: 8082
   selector:
     app: category
-  type: NodePort
+  type: LoadBalancer
 status:
   loadBalancer: {}
