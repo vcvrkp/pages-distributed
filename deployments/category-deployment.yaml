@@ -18,8 +18,7 @@ spec:
     spec:
       volumes:
       - name: log-volume
-        persistentVolumeClaim:
-          claimName: log-persistent-claim
+        emptyDir: {}
       containers:
       - image: mytechdictionary/category:distributed
         imagePullPolicy: Always
